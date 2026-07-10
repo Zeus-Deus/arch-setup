@@ -1,0 +1,14 @@
+# NEVER commit secrets. Public keys only.
+# Private key material:
+id_rsa
+id_ed25519
+id_ecdsa
+*.pem
+*_rsa
+*_ed25519
+*_ecdsa
+# Tailscale / API auth material:
+*authkey*
+*.env
+.env
+secrets/

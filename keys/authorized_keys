@@ -1,0 +1,7 @@
+# Public keys allowed to log in on any machine provisioned by arch-setup.
+# PUBLIC keys only — safe to commit. Never put a private key here.
+# ssh.sh merges these into ~/.ssh/authorized_keys without duplicating.
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMqJFbMEs2DRoz49R54lw31eENVBlGsJZzOoEsSJjYEk zeus@alte
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPAHoB+HdNORY4NZ9A9GeurmLeLusx2+4gxS6Pxmp8jl deus@pandora
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICxDomlDLDpFHIBSDh4bXGfAhyJoW4Qh1+j4O67DNKMU zeus@ai-node
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFPIuTFMA49A7azJ9Vya49jacTq9e0lXbTX9fFe5CJzT iphone-echo
