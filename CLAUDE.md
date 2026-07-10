@@ -20,6 +20,10 @@ common/             # modules that run on EVERY machine
   tailscale.sh
   ssh.sh
   earlyoom.sh
+  btrfsmaintenance.sh
+  zellij.sh
+  mosh.sh
+  bitwarden.sh
 desktop/            # (optional) laptop/desktop-only modules
 server/             # (optional) headless-server-only modules
 keys/authorized_keys  # PUBLIC keys allowed to log in — safe to commit
@@ -54,6 +58,12 @@ Role is passed as `$ARCH_SETUP_ROLE` and the repo root as `$ARCH_SETUP_DIR`.
 - **earlyoom.sh** — installs earlyoom, writes `/etc/default/earlyoom` with an
   `--avoid` list that protects sshd/tailscaled/etc., enables the service.
   Desktop role adds `-n` for on-screen notifications.
+- **btrfsmaintenance.sh** — monthly btrfs scrub + balance; no-op off btrfs.
+- **zellij.sh** — terminal multiplexer.
+- **mosh.sh** — roaming-resilient remote shell (SSH auth + UDP 60000-61000).
+- **bitwarden.sh** — Bitwarden desktop GUI app.
+- **desktop/nvidia-container-toolkit.sh** — NVIDIA container toolkit; wires Docker's GPU runtime.
+- **server/bitwarden-cli.sh** — `bw` CLI for headless credential retrieval.
 
 ## Not doing (yet)
 

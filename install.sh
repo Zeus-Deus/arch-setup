@@ -33,6 +33,10 @@ blue "arch-setup — role=$ROLE"
 bash "$HERE/common/tailscale.sh"
 bash "$HERE/common/ssh.sh"
 bash "$HERE/common/earlyoom.sh"
+bash "$HERE/common/btrfsmaintenance.sh"
+bash "$HERE/common/zellij.sh"
+bash "$HERE/common/mosh.sh"
+bash "$HERE/common/bitwarden.sh"
 
 # --- role-specific layers (add scripts here as the repo grows) --------------
 if [ "$ROLE" = desktop ] && [ -d "$HERE/desktop" ]; then

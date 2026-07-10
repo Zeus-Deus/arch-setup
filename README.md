@@ -24,6 +24,12 @@ privileged steps, so run as your normal user.
 | `common/tailscale.sh` | Installs tailscale, enables `tailscaled`, runs `tailscale up` (one-time login URL). |
 | `common/ssh.sh` | Installs openssh, adds your public keys, hardens to **pubkey-only / no root / no passwords**, validates before reload. |
 | `common/earlyoom.sh` | Installs earlyoom to kill runaway processes before the box freezes — never sshd/tailscaled. Desktop adds on-screen alerts. |
+| `common/btrfsmaintenance.sh` | Monthly btrfs scrub + balance (verify checksums, reclaim chunks). No-op off btrfs. |
+| `common/zellij.sh` | Installs the zellij terminal multiplexer. |
+| `common/mosh.sh` | Installs mosh — roaming-resilient remote shell (SSH auth + UDP). |
+| `common/bitwarden.sh` | Installs the Bitwarden desktop app (GUI). |
+| `desktop/nvidia-container-toolkit.sh` | Installs the NVIDIA container toolkit; wires Docker's GPU runtime. |
+| `server/bitwarden-cli.sh` | Installs the `bw` CLI for headless credential retrieval. |
 
 ## Access safety
 
