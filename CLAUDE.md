@@ -20,6 +20,7 @@ common/             # modules that run on EVERY machine
   tailscale.sh
   ssh.sh
   earlyoom.sh
+  ssd-trim.sh
   btrfsmaintenance.sh
   zellij.sh
   mosh.sh
@@ -58,6 +59,10 @@ Role is passed as `$ARCH_SETUP_ROLE` and the repo root as `$ARCH_SETUP_DIR`.
 - **earlyoom.sh** — installs earlyoom, writes `/etc/default/earlyoom` with an
   `--avoid` list that protects sshd/tailscaled/etc., enables the service.
   Desktop role adds `-n` for on-screen notifications.
+- **ssd-trim.sh** — enables discard passthrough on every LUKS mapping
+  (`cryptsetup refresh --allow-discards --persistent`, asks the passphrase
+  once) + weekly `fstrim.timer` + one immediate `fstrim -av`. Without this,
+  Arch never TRIMs an encrypted SSD and the drive eventually degrades.
 - **btrfsmaintenance.sh** — monthly btrfs scrub + balance; no-op off btrfs.
 - **zellij.sh** — terminal multiplexer.
 - **mosh.sh** — roaming-resilient remote shell (SSH auth + UDP 60000-61000).
