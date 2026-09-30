@@ -29,6 +29,7 @@ privileged steps, so run as your normal user.
 | `common/mosh.sh` | Installs mosh — roaming-resilient remote shell (SSH auth + UDP). |
 | `common/bitwarden.sh` | Installs the Bitwarden desktop app (GUI). |
 | `desktop/nvidia-container-toolkit.sh` | Installs the NVIDIA container toolkit; wires Docker's GPU runtime. |
+| `desktop/docker-data-root.sh` | If an encrypted data SSD is mounted at `/data`, bind-mounts `/data/docker` onto `/var/lib/docker` (fstab) and makes Docker require it. Never moves data; skips when `/data` is absent. |
 | `server/bitwarden-cli.sh` | Installs the `bw` CLI for headless credential retrieval. |
 
 ## Access safety

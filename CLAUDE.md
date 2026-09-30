@@ -68,6 +68,10 @@ Role is passed as `$ARCH_SETUP_ROLE` and the repo root as `$ARCH_SETUP_DIR`.
 - **mosh.sh** — roaming-resilient remote shell (SSH auth + UDP 60000-61000).
 - **bitwarden.sh** — Bitwarden desktop GUI app.
 - **desktop/nvidia-container-toolkit.sh** — NVIDIA container toolkit; wires Docker's GPU runtime.
+- **desktop/docker-data-root.sh** — Docker storage on the `/data` SSD via an fstab bind
+  `/data/docker -> /var/lib/docker` + `RequiresMountsFor` drop-in (fail closed).
+  Leaves Omarchy's packaged `/etc/docker/daemon.json` untouched. Skips if `/data`
+  isn't mounted; refuses if `/var/lib/docker` already holds data (migrate first).
 - **server/bitwarden-cli.sh** — `bw` CLI for headless credential retrieval.
 
 ## Not doing (yet)
