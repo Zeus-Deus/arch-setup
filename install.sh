@@ -9,6 +9,9 @@
 #   ./install.sh common       # same as above
 #   ./install.sh desktop      # common + desktop-only bits
 #   ./install.sh server       # common + server-only bits
+#   TS_AUTHKEY=tskey-... ./install.sh isolated
+#                             # untrusted box (agents, PR reviewers): tagged
+#                             # tailscale, no personal apps, locked-down network
 #
 # Modules are small, idempotent, and additive. Re-running is safe.
 set -euo pipefail
@@ -21,8 +24,8 @@ export ARCH_SETUP_DIR="$HERE"
 blue() { printf '\n\033[1;34m::\033[0m %s\n' "$*"; }
 
 case "$ROLE" in
-  common|desktop|server) ;;
-  *) echo "unknown role: '$ROLE' (use: common | desktop | server)" >&2; exit 1 ;;
+  common|desktop|server|isolated) ;;
+  *) echo "unknown role: '$ROLE' (use: common | desktop | server | isolated)" >&2; exit 1 ;;
 esac
 
 blue "arch-setup — role=$ROLE"
@@ -37,7 +40,8 @@ bash "$HERE/common/ssd-trim.sh"
 bash "$HERE/common/btrfsmaintenance.sh"
 bash "$HERE/common/zellij.sh"
 bash "$HERE/common/mosh.sh"
-bash "$HERE/common/bitwarden.sh"
+# No password manager on an untrusted box.
+[ "$ROLE" = isolated ] || bash "$HERE/common/bitwarden.sh"
 
 # --- role-specific layers (add scripts here as the repo grows) --------------
 if [ "$ROLE" = desktop ] && [ -d "$HERE/desktop" ]; then
@@ -45,6 +49,15 @@ if [ "$ROLE" = desktop ] && [ -d "$HERE/desktop" ]; then
 fi
 if [ "$ROLE" = server ] && [ -d "$HERE/server" ]; then
   for m in "$HERE"/server/*.sh; do [ -e "$m" ] && bash "$m"; done
+fi
+
+# Isolated: fixed order — firewall needs tailscale up; verify must be last.
+if [ "$ROLE" = isolated ]; then
+  bash "$HERE/isolated/headless.sh"
+  bash "$HERE/isolated/agent-user.sh"
+  bash "$HERE/isolated/firewall.sh"
+  blue "verifying isolation"
+  bash "$HERE/isolated/verify.sh" || { echo "isolation checks FAILED — see above" >&2; exit 1; }
 fi
 
 blue "done — role=$ROLE. Open a NEW ssh session to confirm access before closing this one."

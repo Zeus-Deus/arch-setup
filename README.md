@@ -12,6 +12,7 @@ cd arch-setup
 ./install.sh            # common layer (works on any machine)
 ./install.sh desktop    # + desktop/laptop-only bits
 ./install.sh server     # + headless-server-only bits
+TS_AUTHKEY=tskey-... ./install.sh isolated   # untrusted box, see below
 ```
 
 Re-running is safe (every module is idempotent). Modules use `sudo` for
@@ -31,6 +32,10 @@ privileged steps, so run as your normal user.
 | `desktop/nvidia-container-toolkit.sh` | Installs the NVIDIA container toolkit; wires Docker's GPU runtime. |
 | `desktop/docker-data-root.sh` | If an encrypted data SSD is mounted at `/data`, bind-mounts `/data/docker` onto `/var/lib/docker` (fstab) and makes Docker require it. Never moves data; skips when `/data` is absent. |
 | `server/bitwarden-cli.sh` | Installs the `bw` CLI for headless credential retrieval. |
+| `isolated/headless.sh` | Lid close ignored, sleep/suspend/hibernate masked. |
+| `isolated/agent-user.sh` | `agent` user for untrusted workloads: no sudo, no docker, no ssh, can't read your home, lingering. |
+| `isolated/firewall.sh` | ufw: ssh/mosh in over tailscale only; out to the internet only (no LAN, no new tailnet connections). |
+| `isolated/verify.sh` | Pass/fail report of all of the above, network checks run as `agent`. Re-run any time. |
 
 ## Access safety
 
@@ -47,6 +52,25 @@ ARCH_SETUP_SSH_TAILNET_ONLY=1 ./install.sh server
 
 Off by default — pubkey-only already blocks every attack, and binding to the
 tailscale IP has a boot-order caveat on headless machines.
+
+## Isolated role
+
+For machines that run untrusted work (AI agents, PR reviewers) and must not be
+able to reach your other machines. No personal accounts go on the box: no
+Bitwarden, no tailscale login.
+
+1. Tailnet policy (once): `tag:isolated` in `tagOwners`, and grants only from
+   `autogroup:member`, so tagged devices can be reached but can't connect out.
+2. Admin console → Settings → Keys: auth key with tag `tag:isolated`.
+3. On the box, connected to an isolated Wi-Fi (guest network):
+
+```bash
+TS_AUTHKEY=tskey-... ARCH_SETUP_TS_HOSTNAME=reviewer ./install.sh isolated
+```
+
+It refuses to run without a tagged key, and fails if `isolated/verify.sh` does.
+After this, ssh in over tailscale only. Run agent workloads as `sudo -iu agent`.
+Updated the kernel? Reboot before (re-)running, or the firewall can't load.
 
 ## Secrets
 

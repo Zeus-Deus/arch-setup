@@ -15,7 +15,7 @@ in 30 seconds, it's wrong.
 ## Layout
 
 ```
-install.sh          # entrypoint: ./install.sh [common|desktop|server]
+install.sh          # entrypoint: ./install.sh [common|desktop|server|isolated]
 common/             # modules that run on EVERY machine
   tailscale.sh
   ssh.sh
@@ -27,6 +27,7 @@ common/             # modules that run on EVERY machine
   bitwarden.sh
 desktop/            # (optional) laptop/desktop-only modules
 server/             # (optional) headless-server-only modules
+isolated/           # untrusted boxes; fixed order in install.sh, verify.sh last
 keys/authorized_keys  # PUBLIC keys allowed to log in — safe to commit
 ```
 
@@ -73,6 +74,13 @@ Role is passed as `$ARCH_SETUP_ROLE` and the repo root as `$ARCH_SETUP_DIR`.
   Leaves Omarchy's packaged `/etc/docker/daemon.json` untouched. Skips if `/data`
   isn't mounted; refuses if `/var/lib/docker` already holds data (migrate first).
 - **server/bitwarden-cli.sh** — `bw` CLI for headless credential retrieval.
+- **isolated/** — role for untrusted boxes (agents). Joins tailscale only with a
+  `tag:isolated` auth key (`TS_AUTHKEY`), refuses interactive login, skips
+  bitwarden. `headless.sh` (lid/sleep), `agent-user.sh` (unprivileged `agent`),
+  `firewall.sh` (tailnet-only ssh in; internet-only out), `verify.sh` (must pass,
+  network checks run as `agent`). Isolation from your devices relies on the
+  tailnet policy too: grants only from `autogroup:member`. Tested end to end in
+  a VM: LAN, router and tailnet peers blocked, ssh in from members works.
 
 ## Not doing (yet)
 
