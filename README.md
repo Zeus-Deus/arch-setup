@@ -81,4 +81,4 @@ interactively on first run. See `.gitignore`.
 ## Adding to it
 
 One small script per tool under `common/` (everywhere) or `desktop/` / `server/`
-(role-specific). Keep it minimal. See `CLAUDE.md` for the conventions.
+(role-specific). Keep it minimal. See `AGENTS.md` for the conventions.
