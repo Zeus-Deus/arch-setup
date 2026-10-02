@@ -34,7 +34,10 @@ check "LocalSend closed"        bash -c "! grep -q 53317 <<<\"\$0\"" "$S"
 
 echo ":: agent account ($AGENT)"
 check "exists"                  id "$AGENT"
-check "no sudo rights"          bash -c "sudo -l -U $AGENT | grep -q 'not allowed to run sudo'"
+# Real grants only. Deny-only rules like Omarchy's "(ALL) !/usr/bin/asdcontrol"
+# (from a %ALL-style sudoers line) list the user but grant nothing.
+check "no sudo rights"          bash -c "! sudo -l -U $AGENT | sed -n '/may run the following/,\$p' | tail -n +2 | grep -vE '^\s*\([^)]*\)\s*!' | grep -q ."
+check "sudo actually refused"   bash -c "! sudo -u $AGENT sudo -n true"
 check "not in wheel/docker"     bash -c "! id -nG $AGENT | tr ' ' '\n' | grep -qxE 'wheel|sudo|docker'"
 check "password locked"         bash -c "sudo passwd -S $AGENT | awk '{print \$2}' | grep -qx L"
 check "can't read admin home"   bash -c "! sudo -u $AGENT ls $HOME"
