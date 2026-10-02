@@ -63,6 +63,10 @@ else
   [ -f "$BINDFILE" ] && { sudo rm -f "$BINDFILE"; step "removed stale tailnet-bind"; }
 fi
 
+# 4b. host keys — a fresh install where sshd never ran has none, and
+# `sshd -t` refuses to validate without them. Creates only missing keys.
+sudo ssh-keygen -A >/dev/null
+
 # 5. VALIDATE before touching the running service
 if ! sudo sshd -t; then
   echo "ERROR: sshd config invalid — NOT reloading. Fix the above before continuing." >&2
